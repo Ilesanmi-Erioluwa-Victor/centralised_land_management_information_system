@@ -23,11 +23,21 @@ class Database
             return self::$pdo;
         }
 
-        $host = Env::get('DB_HOST');
-        $port = Env::get('DB_PORT', '5432');
-        $name = Env::get('DB_NAME', 'postgres');
-        $user = Env::get('DB_USER');
-        $pass = Env::get('DB_PASS');
+        $url = Env::get('DATABASE_URL');
+        if ($url) {
+            $parts = parse_url($url);
+            $host = $parts['host'] ?? '';
+            $port = $parts['port'] ?? '6543';
+            $user = $parts['user'] ?? '';
+            $pass = $parts['pass'] ?? '';
+            $name = ltrim($parts['path'] ?? '', '/');
+        } else {
+            $host = Env::get('DB_HOST');
+            $port = Env::get('DB_PORT', '5432');
+            $name = Env::get('DB_NAME', 'postgres');
+            $user = Env::get('DB_USER');
+            $pass = Env::get('DB_PASS');
+        }
 
         if (!$host || !$user || !$pass) {
             throw new PDOException('Database environment variables are not configured.');
