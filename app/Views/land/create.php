@@ -1,0 +1,1 @@
+<?php $plot = $plot ?? ['plot_number'=>'','land_type'=>'urban','location'=>'','state'=>'','lga'=>'','area_sqm'=>'','coordinates'=>'','description'=>'','status'=>'available']; $action = '/land/store'; require __DIR__ . '/form.php'; ?>

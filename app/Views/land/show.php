@@ -1,0 +1,8 @@
+<section class="card detail-header"><div><h2><?= e($plot['plot_number']) ?></h2><p><?= e($plot['location']) ?>, <?= e($plot['state']) ?></p></div><span class="badge <?= e($plot['status']) ?>"><?= e($plot['status']) ?></span></section>
+<section class="tabs card">
+  <div class="tab-list"><button data-tab="overview">Overview</button><button data-tab="transactions">Transactions</button><button data-tab="documents">Documents</button></div>
+  <div data-tab-panel="overview"><dl class="detail-list"><dt>Type</dt><dd><?= e($plot['land_type']) ?></dd><dt>Area</dt><dd><?= e($plot['area_sqm']) ?> sqm</dd><dt>Coordinates</dt><dd><?= e($plot['coordinates']) ?></dd><dt>Description</dt><dd><?= e($plot['description']) ?></dd></dl></div>
+  <div data-tab-panel="transactions"><table><thead><tr><th>Date</th><th>Type</th><th>Status</th></tr></thead><tbody><?php foreach ($transactions as $tx): ?><tr><td><?= e($tx['transaction_date']) ?></td><td><?= e($tx['transaction_type']) ?></td><td><span class="badge <?= e($tx['status']) ?>"><?= e($tx['status']) ?></span></td></tr><?php endforeach; ?></tbody></table></div>
+  <div data-tab-panel="documents"><table><thead><tr><th>Document</th><th>Type</th></tr></thead><tbody><?php foreach ($documents as $doc): ?><tr><td><a href="/documents/<?= e($doc['id']) ?>/download"><?= e($doc['file_name']) ?></a></td><td><?= e($doc['doc_type']) ?></td></tr><?php endforeach; ?></tbody></table></div>
+</section>
+<div class="toolbar"><a class="btn secondary" href="/land/<?= e($plot['id']) ?>/edit">Edit</a><form method="post" action="/land/<?= e($plot['id']) ?>/delete" data-confirm="Revoke this plot?"><?= csrf_field() ?><button class="btn danger">Revoke</button></form></div>
