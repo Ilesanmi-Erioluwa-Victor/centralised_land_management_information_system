@@ -37,6 +37,8 @@ class Mailer
             $mail->Password = Env::get('MAIL_PASSWORD');
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = (int) Env::get('MAIL_PORT', 587);
+            $mail->Timeout = 5;
+            $mail->SMTPKeepAlive = false;
             $mail->setFrom(Env::get('MAIL_FROM', 'noreply@example.com'), Env::get('MAIL_FROM_NAME', 'CLMIS System'));
             $mail->addAddress($to, $toName);
             $mail->isHTML(true);
