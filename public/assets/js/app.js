@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.flash').forEach((el) => setTimeout(() => el.remove(), 4000));
-  document.querySelectorAll('[data-sidebar-toggle]').forEach((btn) => btn.addEventListener('click', () => document.getElementById('sidebar')?.classList.toggle('open')));
+  const sidebar = document.getElementById('sidebar');
+  document.querySelectorAll('[data-sidebar-toggle]').forEach((btn) => btn.addEventListener('click', () => sidebar?.classList.toggle('open')));
+  document.querySelector('.main-area')?.addEventListener('click', () => sidebar?.classList.remove('open'));
+  sidebar?.querySelectorAll('nav a').forEach((link) => link.addEventListener('click', () => sidebar.classList.remove('open')));
   document.querySelectorAll('form[data-confirm]').forEach((form) => form.addEventListener('submit', (event) => { if (!confirm(form.dataset.confirm || 'Continue?')) event.preventDefault(); }));
   const panels = document.querySelectorAll('[data-tab-panel]');
   if (panels.length) {
