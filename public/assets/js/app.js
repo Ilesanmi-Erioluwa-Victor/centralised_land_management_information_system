@@ -1,16 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.flash').forEach((el) => setTimeout(() => el.remove(), 4000));
   const sidebar = document.getElementById('sidebar');
-  const sidebarIcon = document.querySelector('[data-sidebar-icon]');
   document.querySelectorAll('[data-sidebar-toggle]').forEach((btn) => btn.addEventListener('click', (e) => {
     e.stopPropagation(); sidebar?.classList.toggle('open');
-    if (sidebarIcon) sidebarIcon.textContent = sidebar?.classList.contains('open') ? '\u2715' : '\u2630';
   }));
   document.querySelector('.main-area')?.addEventListener('click', (e) => {
-    if (!e.target.closest('[data-sidebar-toggle]')) {
-      sidebar?.classList.remove('open');
-      if (sidebarIcon) sidebarIcon.textContent = '\u2630';
-    }
+    if (!e.target.closest('[data-sidebar-toggle]')) sidebar?.classList.remove('open');
   });
   sidebar?.querySelectorAll('nav a').forEach((link) => link.addEventListener('click', () => sidebar.classList.remove('open')));
   document.querySelectorAll('form[data-confirm]').forEach((form) => form.addEventListener('submit', (event) => { if (!confirm(form.dataset.confirm || 'Continue?')) event.preventDefault(); }));

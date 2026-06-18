@@ -33,7 +33,7 @@
   </aside>
   <div class="main-area">
     <header class="topbar">
-      <button class="icon-button" data-sidebar-toggle aria-label="Toggle navigation"><span data-sidebar-icon>☰</span></button>
+      <button class="icon-button" data-sidebar-toggle aria-label="Toggle navigation"><span data-sidebar-icon class="icon-hamburger">&#9776;</span><span data-sidebar-icon class="icon-close">&#10005;</span></button>
       <h1><?= e($title ?? 'Dashboard') ?></h1>
       <div class="topbar-user">
         <span class="bell">●</span>
