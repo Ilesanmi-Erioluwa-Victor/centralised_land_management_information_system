@@ -1,12 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.flash').forEach((el) => setTimeout(() => el.remove(), 4000));
   const sidebar = document.getElementById('sidebar');
+  function updateSidebarIcon() {
+    document.querySelector('.icon-hamburger')?.style.setProperty('display', sidebar?.classList.contains('open') ? 'none' : '');
+    document.querySelector('.icon-close')?.style.setProperty('display', sidebar?.classList.contains('open') ? '' : 'none');
+  }
   document.querySelectorAll('[data-sidebar-toggle]').forEach((btn) => btn.addEventListener('click', (e) => {
-    e.stopPropagation(); sidebar?.classList.toggle('open');
+    e.stopPropagation(); sidebar?.classList.toggle('open'); updateSidebarIcon();
   }));
   document.querySelector('.main-area')?.addEventListener('click', (e) => {
-    if (!e.target.closest('[data-sidebar-toggle]')) sidebar?.classList.remove('open');
+    if (!e.target.closest('[data-sidebar-toggle]')) { sidebar?.classList.remove('open'); updateSidebarIcon(); }
   });
+  sidebar?.querySelectorAll('nav a').forEach((a) => a.addEventListener('click', () => { sidebar.classList.remove('open'); updateSidebarIcon(); }));
   sidebar?.querySelectorAll('nav a').forEach((link) => link.addEventListener('click', () => sidebar.classList.remove('open')));
   document.querySelectorAll('form[data-confirm]').forEach((form) => form.addEventListener('submit', (event) => { if (!confirm(form.dataset.confirm || 'Continue?')) event.preventDefault(); }));
   const panels = document.querySelectorAll('[data-tab-panel]');
