@@ -77,8 +77,8 @@ class Transaction extends BaseModel
         $this->db->beginTransaction();
         try {
             // Update the transaction status first.
-            $stmt = $this->db->prepare('UPDATE transactions SET status = :status, approved_by = :approved_by, approved_at = CASE WHEN :status = :approved THEN NOW() ELSE approved_at END WHERE id = :id');
-            $stmt->execute(['id' => $id, 'status' => $status, 'approved_by' => $approvedBy, 'approved' => 'approved']);
+            $stmt = $this->db->prepare('UPDATE transactions SET status = :status, approved_by = :approved_by, approved_at = CASE WHEN :status_check = :approved THEN NOW() ELSE approved_at END WHERE id = :id');
+            $stmt->execute(['id' => $id, 'status' => $status, 'status_check' => $status, 'approved_by' => $approvedBy, 'approved' => 'approved']);
 
             if ($status === 'approved') {
                 $transaction = $this->findById($id);
