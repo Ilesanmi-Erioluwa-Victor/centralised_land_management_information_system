@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Helpers\Flash;
 use App\Models\AuditLog;
 use App\Models\Document;
+use App\Models\LandOwner;
 use App\Models\LandPlot;
 use App\Models\Transaction;
 
@@ -46,7 +47,8 @@ class LandController extends BaseController
      */
     public function create(): void
     {
-        $this->view('land/create', ['title' => 'Register Plot']);
+        $owners = (new LandOwner())->list([], 1);
+        $this->view('land/create', ['title' => 'Register Plot', 'owners' => $owners]);
     }
 
     /**
@@ -61,8 +63,10 @@ class LandController extends BaseController
             Flash::set('error', 'Plot number already exists.');
             $this->redirect('/land/create');
         }
+        $ownerId = $_POST['owner_id'] ?? null;
+        unset($_POST['owner_id']);
         $_POST['registered_by'] = $_SESSION['user_id'] ?? null;
-        $id = (new LandPlot())->create($_POST);
+        $id = (new LandPlot())->create($_POST, $ownerId);
         (new AuditLog())->create($_SESSION['user_id'] ?? null, 'plot_created', 'land_plot', $id, null, $_POST, $this->ip());
         Flash::set('success', 'Land plot registered.');
         $this->redirect('/land/' . $id);
@@ -76,7 +80,13 @@ class LandController extends BaseController
      */
     public function edit(string $id): void
     {
-        $this->view('land/edit', ['title' => 'Edit Plot', 'plot' => (new LandPlot())->findById($id)]);
+        $plot = (new LandPlot())->findById($id);
+        $currentOwner = (new LandPlot())->getCurrentOwner($id);
+        if ($currentOwner) {
+            $plot['owner_id'] = $currentOwner['owner_id'];
+        }
+        $owners = (new LandOwner())->list([], 1);
+        $this->view('land/edit', ['title' => 'Edit Plot', 'plot' => $plot, 'owners' => $owners]);
     }
 
     /**
@@ -90,7 +100,12 @@ class LandController extends BaseController
         $this->verifyPost();
         $model = new LandPlot();
         $old = $model->findById($id);
+        $ownerId = $_POST['owner_id'] ?? null;
+        unset($_POST['owner_id']);
         $model->update($id, $_POST);
+        if ($ownerId !== null) {
+            $model->setOwner($id, $ownerId);
+        }
         (new AuditLog())->create($_SESSION['user_id'] ?? null, 'plot_updated', 'land_plot', $id, $old, $_POST, $this->ip());
         Flash::set('success', 'Land plot updated.');
         $this->redirect('/land/' . $id);

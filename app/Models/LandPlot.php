@@ -21,6 +21,19 @@ class LandPlot extends BaseModel
         return $stmt->fetch() ?: null;
     }
 
+    public function getCurrentOwner(string $id): ?array
+    {
+        $stmt = $this->db->prepare('SELECT owner_id FROM plot_ownership WHERE plot_id = :id AND is_current = TRUE LIMIT 1');
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public function setOwner(string $plotId, string $ownerId): void
+    {
+        $this->db->prepare('UPDATE plot_ownership SET is_current = FALSE, end_date = CURRENT_DATE WHERE plot_id = :plot_id AND is_current = TRUE')->execute(['plot_id' => $plotId]);
+        $this->db->prepare('INSERT INTO plot_ownership (plot_id, owner_id, start_date, is_current) VALUES (:plot_id, :owner_id, CURRENT_DATE, TRUE)')->execute(['plot_id' => $plotId, 'owner_id' => $ownerId]);
+    }
+
     /**
      * Find a plot by plot number.
      *
@@ -91,7 +104,7 @@ class LandPlot extends BaseModel
      * @param array<string,mixed> $data
      * @return string
      */
-    public function create(array $data): string
+    public function create(array $data, ?string $ownerId = null): string
     {
         // Insert a land plot and return its generated UUID.
         $stmt = $this->db->prepare('INSERT INTO land_plots (plot_number, land_type, location, state, lga, area_sqm, coordinates, description, status, registered_by) VALUES (:plot_number, :land_type, :location, :state, :lga, :area_sqm, :coordinates, :description, :status, :registered_by) RETURNING id');
@@ -107,7 +120,12 @@ class LandPlot extends BaseModel
             'status' => $data['status'] ?? 'available',
             'registered_by' => $data['registered_by'] ?? null,
         ]);
-        return (string) $stmt->fetchColumn();
+        $id = (string) $stmt->fetchColumn();
+        if ($ownerId !== null) {
+            $own = $this->db->prepare('INSERT INTO plot_ownership (plot_id, owner_id, start_date, is_current) VALUES (:plot_id, :owner_id, CURRENT_DATE, TRUE)');
+            $own->execute(['plot_id' => $id, 'owner_id' => $ownerId]);
+        }
+        return $id;
     }
 
     /**

@@ -9,6 +9,7 @@
     <label>LGA <input name="lga" value="<?= e($plot['lga'] ?? '') ?>"></label>
     <label>Area sqm <input type="number" step="0.01" min="0" name="area_sqm" value="<?= e($plot['area_sqm'] ?? '') ?>"></label>
     <label>Coordinates <input name="coordinates" value="<?= e($plot['coordinates'] ?? '') ?>"></label>
+    <label>Initial owner <select name="owner_id"><?php foreach ($owners ?? [] as $o): ?><option value="<?= e($o['id']) ?>" <?= ($plot['owner_id'] ?? '')===$o['id']?'selected':'' ?>><?= e($o['full_name']) ?></option><?php endforeach; ?></select></label>
     <label>Status <select name="status"><?php foreach(['available','allocated','disputed','revoked','pending'] as $x): ?><option <?= ($plot['status'] ?? '')===$x?'selected':'' ?>><?= $x ?></option><?php endforeach; ?></select></label>
     <label class="span-2">Description <textarea name="description"><?= e($plot['description'] ?? '') ?></textarea></label>
     <button class="btn primary" type="submit">Save plot</button>
