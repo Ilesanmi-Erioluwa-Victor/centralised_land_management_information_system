@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   entity_id UUID,
   old_data JSONB,
   new_data JSONB,
-  ip_address VARCHAR(45),
+  ip_address VARCHAR(255),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );

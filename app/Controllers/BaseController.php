@@ -55,6 +55,10 @@ abstract class BaseController
      */
     protected function ip(): ?string
     {
-        return $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
+        if ($ip !== null && str_contains($ip, ',')) {
+            $ip = explode(',', $ip)[0];
+        }
+        return $ip !== null ? trim($ip) : null;
     }
 }
